@@ -1,9 +1,14 @@
 //import tea model
 const Tea = require("../models/tea");
 
-//GET '/tea'
-const getAllTea = (req, res, next) => {
-  res.json({ message: "GET all tea" });
+//GET all teas
+const getAllTea = (req, res) => {
+  Tea.find({}, (err, data) => {
+    if (err) {
+      return res.json({ Error: err });
+    }
+    return res.json(data);
+  });
 };
 
 //POST tea
@@ -35,24 +40,63 @@ const newTea = (req, res) => {
   });
 };
 
-//DELETE '/tea'
-const deleteAllTea = (req, res, next) => {
-  res.json({ message: "DELETE all tea" });
+//DELETE teas
+const deleteAllTea = (req, res) => {
+  Tea.deleteMany({}, (err) => {
+    if (err) {
+      return res.json({ message: "Complete delete failed" });
+    }
+    return res.json({ message: "Complete delete successful" });
+  });
 };
 
-//GET '/tea/:name'
-const getOneTea = (req, res, next) => {
-  res.json({ message: "GET 1 tea" });
+const getOneTea = (req, res) => {
+  let name = req.params.name; //get the tea name
+
+  //find the specific tea with that name
+  Tea.findOne({ name: name }, (err, data) => {
+    if (err || !data) {
+      return res.json({ message: "Tea doesn't exist." });
+    } else return res.json(data); //return the tea object if found
+  });
 };
 
-//POST '/tea/:name'
-const newComment = (req, res, next) => {
-  res.json({ message: "POST 1 tea comment" });
+//POST 1 tea comment
+const newComment = (req, res) => {
+  let name = req.params.name; //get the tea to add the comment in
+  let newComment = req.body.comment; //get the comment
+  //create a comment object to push
+  const comment = {
+    text: newComment,
+    date: new Date(),
+  };
+  //find the tea object
+  Tea.findOne({ name: name }, (err, data) => {
+    if (err || !data || !newComment) {
+      return res.json({ message: "Tea doesn't exist." });
+    } else {
+      //add comment to comments array of the tea object
+      data.comments.push(comment);
+      //save changes to db
+      data.save((err) => {
+        if (err) {
+          return res.json({ message: "Comment failed to add.", error: err });
+        }
+        return res.json(data);
+      });
+    }
+  });
 };
 
-//DELETE '/tea/:name'
-const deleteOneTea = (req, res, next) => {
-  res.json({ message: "DELETE 1 tea" });
+//DELETE 1 tea
+const deleteOneTea = (req, res) => {
+  let name = req.params.name; // get the name of tea to delete
+
+  Tea.deleteOne({ name: name }, (err, data) => {
+    if (err || !data) {
+      return res.json({ message: "Tea doesn't exist." });
+    } else return res.json({ message: "Tea deleted." }); //deleted if found
+  });
 };
 
 //export controller functions
