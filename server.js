@@ -28,8 +28,8 @@ const routes = require("./routes/tea"); // import the routes
 const app = express();
 
 app.use(express.json()); // parses incoming requests with JSON payloads
-
 app.use("/", routes); //to use the routes
+app.use("/uploads", express.static("./uploads"));
 
 // our listener asks our server to listen for a request
 const listener = app.listen(process.env.PORT || 3000, () => {
