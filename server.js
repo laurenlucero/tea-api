@@ -1,8 +1,7 @@
 require("dotenv").config();
-
-//import mongoose
 const mongoose = require("mongoose");
-
+const helmet = require("helmet");
+const compression = require('compression');
 //establish connection to database
 mongoose.connect(
   process.env.MONGODB_URI,
@@ -11,6 +10,12 @@ mongoose.connect(
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
+    server: { 
+      socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } 
+   }, 
+   replset: {
+      socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } 
+   }   
   },
   (err) => {
     if (err) return console.log("Error: ", err);
@@ -30,7 +35,13 @@ const app = express();
 app.use(express.json()); // parses incoming requests with JSON payloads
 app.use("/", routes); //to use the routes
 app.use("/uploads", express.static("./uploads"));
+app.use(helmet());
+app.use(compression()); //Compress all routes
 
+app.route('/')
+  .get(function (req, res) {
+    res.sendFile(process.cwd() + '/index.html');
+});
 // our listener asks our server to listen for a request
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log("App is listening on port " + listener.address().port);
