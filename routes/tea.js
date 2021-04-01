@@ -5,7 +5,7 @@ const router = express.Router();
 const teaController = require("../controllers/tea");
 // 3. create our routes with the controller fn as the callback to handle the request
 router.get("/tea", teaController.getAllTea);
-router.post("/tea", teaController.newTea);
+router.post("/tea", teaController.uploadImg, teaController.newTea);
 router.delete("/tea", teaController.deleteAllTea);
 
 router.get("/tea/:name", teaController.getOneTea);

@@ -7,7 +7,7 @@ const TeaSchema = new mongoose.Schema({
   description: String,
   keywords: String,
   origin: String,
-  brew_time: Number,
+  brew_time: String,
   temperature: Number,
   comments: [{ text: String, date: { type: String, default: new Date() } }],
 });
