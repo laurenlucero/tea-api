@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "npm test"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Lauren Lucero",
   "license": "ISC",
@@ -19,6 +19,5 @@
   },
   "engines": {
     "node": "15.13.0"
-  },
-
+  }
 }
