@@ -1,8 +1,10 @@
 require("dotenv").config();
+
 const mongoose = require("mongoose");
 const helmet = require("helmet");
 const compression = require("compression");
-//establish connection to database
+
+// establish connection to database
 mongoose.connect(
   process.env.MONGODB_URI,
   {
@@ -33,13 +35,13 @@ const routes = require("./routes/tea"); // import the routes
 const app = express();
 
 app.use(express.json()); // parses incoming requests with JSON payloads
-app.use("/", routes); //to use the routes
+app.use("/", routes); // to use the routes
 app.route("/").get(function (req, res) {
   res.sendFile(process.cwd() + "/index.html");
 });
 app.use("/uploads", express.static("./uploads"));
 app.use(helmet());
-app.use(compression()); //Compress all routes
+app.use(compression()); // Compress all routes
 
 // our listener asks our server to listen for a request
 const listener = app.listen(process.env.PORT || 3000, () => {
