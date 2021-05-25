@@ -32,13 +32,13 @@ const routes = require("./routes/tea"); // import the routes
 
 const app = express();
 
-app.use(helmet());
 app.use(express.json()); // parses incoming requests with JSON payloads
 app.use("/", routes); //to use the routes
 app.route("/").get(function (req, res) {
   res.sendFile(process.cwd() + "/index.html");
 });
 app.use("/uploads", express.static("./uploads"));
+app.use(helmet());
 app.use(compression()); //Compress all routes
 
 // our listener asks our server to listen for a request

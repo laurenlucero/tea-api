@@ -1,8 +1,8 @@
-//import tea model
+// import tea model
 const Tea = require("../models/tea");
 const multer = require("multer");
 
-//GET all teas
+// GET all teas
 const getAllTea = (req, res) => {
   Tea.find({}, (err, data) => {
     if (err) {
@@ -12,16 +12,16 @@ const getAllTea = (req, res) => {
   });
 };
 
-//POST tea
+// POST tea
 const newTea = (req, res) => {
-  //check if the tea name already exists in db
+  // check if the tea name already exists in db
   Tea.findOne({ name: req.body.name }, (data) => {
-    //if tea not in db, add it
+    // if tea not in db, add it
     if (data === null) {
-      //create a new tea object using the Tea model and req.body
+      // create a new tea object using the Tea model and req.body
       const newTea = new Tea({
         name: req.body.name,
-        image: req.body.path,
+        image: req.file.path,
         description: req.body.description,
         keywords: req.body.keywords,
         origin: req.body.origin,
@@ -34,14 +34,14 @@ const newTea = (req, res) => {
         if (err) return res.json({ Error: err });
         return res.json(data);
       });
-      //if tea is in db, return a message to inform it exists
+      // if tea is in db, return a message to inform it exists
     } else {
       return res.json({ message: "Tea already exists" });
     }
   });
 };
 
-//DELETE teas
+// DELETE teas
 const deleteAllTea = (req, res) => {
   Tea.deleteMany({}, (err) => {
     if (err) {
@@ -54,7 +54,7 @@ const deleteAllTea = (req, res) => {
 const getOneTea = (req, res) => {
   let name = req.params.name; //get the tea name
 
-  //find the specific tea with that name
+  // find the specific tea with that name
   Tea.findOne({ name: name }, (err, data) => {
     if (err || !data) {
       return res.json({ message: "Tea doesn't exist." });
@@ -62,23 +62,23 @@ const getOneTea = (req, res) => {
   });
 };
 
-//POST 1 tea comment
+// POST 1 tea comment
 const newComment = (req, res) => {
   let name = req.params.name; //get the tea to add the comment in
   let newComment = req.body.comment; //get the comment
-  //create a comment object to push
+  // create a comment object to push
   const comment = {
     text: newComment,
     date: new Date(),
   };
-  //find the tea object
+  // find the tea object
   Tea.findOne({ name: name }, (err, data) => {
     if (err || !data || !newComment) {
       return res.json({ message: "Tea doesn't exist." });
     } else {
-      //add comment to comments array of the tea object
+      // add comment to comments array of the tea object
       data.comments.push(comment);
-      //save changes to db
+      // save changes to db
       data.save((err) => {
         if (err) {
           return res.json({ message: "Comment failed to add.", error: err });
@@ -89,7 +89,7 @@ const newComment = (req, res) => {
   });
 };
 
-//DELETE 1 tea
+// DELETE 1 tea
 const deleteOneTea = (req, res) => {
   let name = req.params.name; // get the name of tea to delete
 
@@ -114,6 +114,7 @@ const uploadImg = multer({ storage: storage }).single("image");
 //export controller functions
 module.exports = {
   getAllTea,
+  uploadImg,
   newTea,
   deleteAllTea,
   getOneTea,
